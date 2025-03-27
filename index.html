@@ -1,28 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Lista de Tareas</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <p id="Lista" class="Lista"></p>
-    
-    <div class="mb-3">
-    <h3>Ingrese Nueva Tarea </h3>
-    <input type="text" id="Tarea" name="Tarea" class="Tarea" placeholder="Ingrese tarea aquí">
+    <h3>Ingrese Nueva Tarea</h3>
+    <input type="text" id="Tarea" name="Tarea" placeholder="Ingrese tarea aquí">
     <p id="VacíoTarea" class="text-danger"></p>
-    <p id="NotaValida" class="text-s"></p>
-    <p id="VacíoTarea" class="text-s"></p>
-    <ul id="ListaTarea">
-    <li> 
+    <button class="btn btn-primary" onclick="AgregarTareaPendiente()">Agregar Tarea</button>
+    <button class="btn btn-secondary" onclick="TareaMasRapida()">Mostrar tarea más rápida</button>
 
-    </li>
-  </ul>
-    <input type="button" value="Agregar Tarea pendiente" class="btn btn-primary" onclick="AgregarTareaPendiente()">
-    </div>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>✔</th>
+                <th>Tarea</th>
+                <th>Fecha de Creación</th>
+                <th>Fecha de Completación</th>
+            </tr>
+        </thead>
+        <tbody id="tablaTareas"></tbody>
+    </table>
 
+    <script src="script.js"></script>
 </body>
-<script src ="script.js"></script>
 </html>

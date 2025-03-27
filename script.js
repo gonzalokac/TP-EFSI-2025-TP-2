@@ -1,40 +1,90 @@
-var tareas=[];
-function AgregarTareaPendiente () {
+let tareas = [];
 
-    let Tarea =  document.getElementById("Tarea").value;
+function AgregarTareaPendiente() {
+    let inputTarea = document.getElementById("Tarea");
+    let mensajeError = document.getElementById("VacíoTarea");
     
-    let VacíoTarea = document.getElementById("VacíoTarea");
-
-    let TareaValida = document.getElementById("NotaValida");
+    if (inputTarea.value.trim() === "") {
+        mensajeError.textContent = "Por favor, ingrese una tarea.";
+        return;
+    }
+    mensajeError.textContent = ""; 
     
-    NotaValida.textContent = "";
+    let nuevaTarea = {
+        texto: inputTarea.value,
+        completado: false,
+        creado: new Date(),
+        completadoEn: ""
+    };
+    
+    tareas.push(nuevaTarea);
+    inputTarea.value = "";
+    ActualizarLista();
+}
 
-     VacíoTarea.textContent = "";
-
-
-     if (Tarea=="") {
-        VacíoTarea.textContent = "Escriba algo antes de agregar la tarea.";
-        valido = false;
-    } else{
-
-        TareaValida.textContent = "El ingreso de la tarea estuvo bien.";
-       var NuevaTarea={
-        Tarea:Tarea,
-        FechaCreación:new Date(),
-        Completada: false
-       };
-        tareas.push(NuevaTarea);//agrego nueva tarea al array
-        Tarea.textContent=" ";
-        MostrarTareas();
-
-            
+function ActualizarLista() {
+    let tablaTareas = document.getElementById("tablaTareas");
+    tablaTareas.innerHTML = "";
+    
+    tareas.forEach((tarea, index) => {
+        let fila = tablaTareas.insertRow();
+        
+        let celdaCheckbox = fila.insertCell(0);
+        let checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = tarea.completado;
+        checkbox.addEventListener("change", function() {
+            tarea.completado = this.checked;
+            tarea.completadoEn = this.checked ? new Date() : "";
+            ActualizarLista();
+        });
+        celdaCheckbox.appendChild(checkbox);
+        
+        let celdaTexto = fila.insertCell(1);
+        celdaTexto.textContent = tarea.texto;
+        if (tarea.completado) {
+            celdaTexto.style.textDecoration = "line-through";
+        }
+        
+        let celdaCreado = fila.insertCell(2);
+        celdaCreado.textContent = tarea.creado;
+        
+        let celdaCompletado = fila.insertCell(3);
+        celdaCompletado.textContent = tarea.completadoEn;
+    });
+}
+function TareaMasRapida() {
+    let completadas = tareas.filter(t => t.completado);
+    
+    if (completadas.length == 0) {
+        alert("No hay tareas completadas aún.");
+        return;
     }
-    function MostrarTareas (){
 
-    var Lista=document.getElementById("ListaTarea");
-    for(let i = 0; i<tareas.length;i++){
+    let tiempos = completadas.map(t => {
+        let tiempoCreacion = new Date(t.creado);
+        let tiempoCompletado = new Date(t.completadoEn);
+        
+        if (isNaN(tiempoCreacion.getTime()) || isNaN(tiempoCompletado.getTime())) {
+            console.log("Error en las fechas de las tareas", t);
+            return null;
+        }
 
-        var ElementoTarea=tareas[i];    }
+        let tiempo = (tiempoCompletado - tiempoCreacion) / 1000;
+        
+        return {
+            texto: t.texto,
+            tiempo: tiempo
+        };
+    }).filter(t => t !== null); 
 
+    if (tiempos.length === 0) {
+        alert("No hay tareas completadas correctamente.");
+        return;
     }
+
+    
+    let masRapida = tiempos.reduce((min, tarea) => tarea.tiempo < min.tiempo ? tarea : min, tiempos[0]);
+
+    alert(`La tarea más rápida en completarse fue: "${masRapida.texto}" en ${masRapida.tiempo.toFixed(2)} segundos.`);
 }
